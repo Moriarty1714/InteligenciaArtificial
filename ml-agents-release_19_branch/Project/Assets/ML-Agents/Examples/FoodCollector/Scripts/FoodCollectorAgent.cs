@@ -17,6 +17,7 @@ public class FoodCollectorAgent : Agent
     float m_EffectTime;
     Rigidbody m_AgentRb;
     float m_LaserLength;
+    int score;
     // Speed of agent rotation.
     public float turnSpeed = 300;
 
@@ -38,6 +39,7 @@ public class FoodCollectorAgent : Agent
 
     public override void Initialize()
     {
+        score = 0;
         m_AgentRb = GetComponent<Rigidbody>();
         m_MyArea = area.GetComponent<FoodCollectorArea>();
         m_FoodCollecterSettings = FindObjectOfType<FoodCollectorSettings>();
@@ -47,6 +49,7 @@ public class FoodCollectorAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        sensor.AddObservation(m_MyArea.zone.transform.position - transform.position);
         if (useVectorObs)
         {
             var localVelocity = transform.InverseTransformDirection(m_AgentRb.velocity);
@@ -234,7 +237,7 @@ public class FoodCollectorAgent : Agent
         {
             Satiate();
             collision.gameObject.GetComponent<FoodLogic>().OnEaten();
-            AddReward(1f);
+            score++;
             if (contribute)
             {
                 m_FoodCollecterSettings.totalScore += 1;
@@ -245,10 +248,22 @@ public class FoodCollectorAgent : Agent
             Poison();
             collision.gameObject.GetComponent<FoodLogic>().OnEaten();
 
-            AddReward(-1f);
+            score--;
             if (contribute)
             {
                 m_FoodCollecterSettings.totalScore -= 1;
+            }
+        }
+    }
+    void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.CompareTag("zone"))
+        {
+            AddReward(score);
+            score = 0;
+            if (contribute)
+            {
+                m_FoodCollecterSettings.totalScore += 1;
             }
         }
     }

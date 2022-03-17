@@ -24,6 +24,7 @@ public class FoodCollectorSettings : MonoBehaviour
     {
         ClearObjects(GameObject.FindGameObjectsWithTag("food"));
         ClearObjects(GameObject.FindGameObjectsWithTag("badFood"));
+        ClearObjects(GameObject.FindGameObjectsWithTag("zone"));
 
         agents = GameObject.FindGameObjectsWithTag("agent");
         listArea = FindObjectsOfType<FoodCollectorArea>();

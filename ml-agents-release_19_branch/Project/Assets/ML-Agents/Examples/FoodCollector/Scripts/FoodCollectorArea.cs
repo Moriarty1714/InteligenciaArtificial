@@ -5,6 +5,7 @@ public class FoodCollectorArea : Area
 {
     public GameObject food;
     public GameObject badFood;
+    public GameObject zone;
     public int numFood;
     public int numBadFood;
     public bool respawnFood;
@@ -22,6 +23,11 @@ public class FoodCollectorArea : Area
         }
     }
 
+    void CreateZone()
+    {
+        Instantiate(zone, new Vector3(Random.Range(-range, range), 1f, Random.Range(-range, range)) + transform.position, Quaternion.identity);
+    }
+
     public void ResetFoodArea(GameObject[] agents)
     {
         foreach (GameObject agent in agents)
@@ -37,6 +43,7 @@ public class FoodCollectorArea : Area
 
         CreateFood(numFood, food);
         CreateFood(numBadFood, badFood);
+        CreateZone();
     }
 
     public override void ResetArea()
