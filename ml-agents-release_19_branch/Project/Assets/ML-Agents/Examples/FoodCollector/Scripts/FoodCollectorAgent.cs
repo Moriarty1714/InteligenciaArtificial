@@ -50,6 +50,7 @@ public class FoodCollectorAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(m_MyArea.zone.transform.position - transform.position);
+        sensor.AddObservation(score);
         if (useVectorObs)
         {
             var localVelocity = transform.InverseTransformDirection(m_AgentRb.velocity);
@@ -237,6 +238,7 @@ public class FoodCollectorAgent : Agent
         {
             Satiate();
             collision.gameObject.GetComponent<FoodLogic>().OnEaten();
+            AddReward(0.1f);
             score++;
             if (contribute)
             {
@@ -247,7 +249,7 @@ public class FoodCollectorAgent : Agent
         {
             Poison();
             collision.gameObject.GetComponent<FoodLogic>().OnEaten();
-
+            AddReward(-0.1f);
             score--;
             if (contribute)
             {
