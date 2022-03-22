@@ -17,7 +17,7 @@ public class FoodCollectorAgent : Agent
     float m_EffectTime;
     Rigidbody m_AgentRb;
     float m_LaserLength;
-    int score;
+    public int score;
     // Speed of agent rotation.
     public float turnSpeed = 300;
 
@@ -49,7 +49,6 @@ public class FoodCollectorAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(m_MyArea.zone.transform.position - transform.position);
         sensor.AddObservation(score);
         if (useVectorObs)
         {
@@ -97,7 +96,7 @@ public class FoodCollectorAgent : Agent
         var rotateDir = Vector3.zero;
 
         var continuousActions = actionBuffers.ContinuousActions;
-        var discreteActions = actionBuffers.DiscreteActions;
+        //var discreteActions = actionBuffers.DiscreteActions;
 
         if (!m_Frozen)
         {
@@ -109,13 +108,13 @@ public class FoodCollectorAgent : Agent
             dirToGo += transform.right * right;
             rotateDir = -transform.up * rotate;
 
-            var shootCommand = discreteActions[0] > 0;
-            if (shootCommand)
-            {
-                m_Shoot = true;
-                dirToGo *= 0.5f;
-                m_AgentRb.velocity *= 0.75f;
-            }
+            //var shootCommand = discreteActions[0] > 0;
+            //if (shootCommand)
+            //{
+            //    m_Shoot = true;
+            //    dirToGo *= 0.5f;
+            //    m_AgentRb.velocity *= 0.75f;
+            //}
             m_AgentRb.AddForce(dirToGo * moveSpeed, ForceMode.VelocityChange);
             transform.Rotate(rotateDir, Time.fixedDeltaTime * turnSpeed);
         }
@@ -239,34 +238,26 @@ public class FoodCollectorAgent : Agent
             Satiate();
             collision.gameObject.GetComponent<FoodLogic>().OnEaten();
             AddReward(0.1f);
-            score++;
-            if (contribute)
-            {
-                m_FoodCollecterSettings.totalScore += 1;
-            }
+            score += 1;
         }
         if (collision.gameObject.CompareTag("badFood"))
         {
             Poison();
             collision.gameObject.GetComponent<FoodLogic>().OnEaten();
-            AddReward(-0.1f);
-            score--;
-            if (contribute)
-            {
-                m_FoodCollecterSettings.totalScore -= 1;
-            }
+            AddReward(-0.5f);
+            score -= 5;
         }
     }
     void OnTriggerEnter(Collider collider)
     {
         if (collider.gameObject.CompareTag("zone"))
         {
-            AddReward(score);
-            score = 0;
+            AddReward(score*0.9f);
             if (contribute)
             {
-                m_FoodCollecterSettings.totalScore += 1;
+                m_FoodCollecterSettings.totalScore += score;
             }
+            score = 0;
         }
     }
 

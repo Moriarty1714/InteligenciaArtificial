@@ -25,7 +25,8 @@ public class FoodCollectorArea : Area
 
     void CreateZone()
     {
-        Instantiate(zone, new Vector3(Random.Range(-range, range), 1f, Random.Range(-range, range)) + transform.position, Quaternion.identity);
+        Instantiate(zone, new Vector3(Random.Range(-range, range), 1f, Random.Range(-range, range)) + transform.position, Quaternion.identity)
+            .GetComponent<MoveArea>().area = this;
     }
 
     public void ResetFoodArea(GameObject[] agents)
