@@ -227,7 +227,7 @@ public class FoodCollectorAgent : Agent
             2f, Random.Range(-m_MyArea.range, m_MyArea.range))
             + area.transform.position;
         transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
-
+        score = 0;
         SetResetParameters();
     }
 
